@@ -7,8 +7,13 @@ getPageSelectHTML()
 
 function getPageSelectHTML() {
   const selectRegExp = /<select[\s\S]+select>/
+  const path = '/pages/common/page-select.html'
 
-  return fetch('/pages/common/page-select.html')
+  if (location.pathname == path) {
+    return Promise.resolve()
+  }
+
+  return fetch(path)
     .then(response => response.text())
     .then(html => html.match(selectRegExp)[0])
 }
@@ -16,7 +21,9 @@ function getPageSelectHTML() {
 function replacePageSelectPlaceholder(pageSelectHTML) {
   const pageSelect = document.getElementById('page-select')
 
-  pageSelect.outerHTML = pageSelectHTML
+  if (pageSelectHTML) {
+    pageSelect.outerHTML = pageSelectHTML
+  }
 }
 
 function selectCurrentPageOption() {
