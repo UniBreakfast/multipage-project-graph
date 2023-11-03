@@ -8,11 +8,11 @@ const feedbackTemplate = details.querySelector('template')
 addNodeForm.onsubmit = handleAddNodeSubmit
 
 async function handleAddNodeSubmit() {
-  const data = Object.fromEntries(new FormData(addNodeForm))
+  const payload = Object.fromEntries(new FormData(addNodeForm))
   const init = {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify(data),
+    body: JSON.stringify(payload),
   }
   const result = await fetch('/api/nodes', init)
 
@@ -39,7 +39,7 @@ function handleFirstFeedback() {
 }
 
 function tellNode(node) {
-  const { li, btn, a } = useNodeTemplate()
+  const { li, btn, a } = useFeedbackTemplate()
   const children = [...li.childNodes]
 
   btn.textContent = node.id
@@ -52,14 +52,14 @@ function tellNode(node) {
 }
 
 function tellProblem(problem) {
-  const { li } = useNodeTemplate()
+  const { li } = useFeedbackTemplate()
 
   li.replaceChildren(...firstFeedback.childNodes)
   restOfLines.prepend(li)
   firstFeedback.textContent = problem.complaint
 }
 
-function useNodeTemplate() {
+function useFeedbackTemplate() {
   const { content } = feedbackTemplate
   const li = content.firstElementChild.cloneNode(true)
   const btn = li.firstElementChild
