@@ -24,12 +24,47 @@
   <h1>Nodes</h1>
 
   <form action="javascript:" id="nodes-form">
+    <ul>
+      <button value="delete">Delete</button>
+    </ul>
+    
     <select name="nodes" multiple>
       <template>
         <option value=""></option>
       </template>
     </select>
   </form>
+
+  <hr>
+
+  <b>
+    Select one or more nodes to delete.
+  </b>
+
+  <details id="nodes-details" hidden>
+    <summary>
+      <b>
+        <button>00a3e</button>
+        <a>handleAddNodeSubmit</a>
+        <span>deleted</span>
+      </b>
+    </summary>
+
+    <ul>
+      <li>
+        <button title="id">00a3e</button>
+        <a>handleAddNodeSubmit</a>
+        <span>deleted</span>
+      </li>
+      <template>
+        <li>
+          <button title="id"></button>
+          <a></a>
+          <span>deleted</span>
+        </li>
+      </template>
+    </ul>
+  </details>
 </body>
 
 </html>
