@@ -7,7 +7,7 @@ const server = createServer()
 const port = process.env.PORT
 const env = process.env.NODE_ENV
 
-const nodes = loadNodes()
+let nodes = loadNodes()
 
 let idCounter = loadIdCounter()
 
@@ -80,7 +80,7 @@ async function handleApiRequest(request, response) {
         response.end(JSON.stringify(nodes))
         break
   
-      case 'POST /api/nodes':
+      case 'POST /api/nodes': {
         const body = await getBody(request)
         let node = JSON.parse(body)
         const { name } = node
@@ -92,7 +92,20 @@ async function handleApiRequest(request, response) {
         saveNodes()
         response.end(JSON.stringify(node))
         break
-  
+      }
+      case 'DELETE /api/nodes': {
+        const body = await getBody(request)
+        const nodeIds = JSON.parse(body)
+
+        if (!nodeIds.length) throw 'No node ids provided'
+        
+        const nodesToDelete = nodes.filter(node => nodeIds.includes(node.id))
+
+        nodes = nodes.filter(node => !nodeIds.includes(node.id))
+        saveNodes()
+        response.end(JSON.stringify(nodesToDelete))
+        break
+      }
       default:
         const json = JSON.stringify({ complaint: 'route not found' })
 
