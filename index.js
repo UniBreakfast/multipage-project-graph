@@ -1,14 +1,62 @@
 try { require('./.env.js') } catch {}
 
 const { createServer } = require('http')
-const { readFile } = require('fs/promises')
+const { readFile, writeFile } = require('fs/promises')
+const { readFileSync } = require('fs')
 const server = createServer()
 const port = process.env.PORT
 const env = process.env.NODE_ENV
 
+const nodes = loadNodes()
+
+let idCounter = loadIdCounter()
+
 server.on('request', handleRequest)
 
 server.listen(port, notifyServerStarted)
+
+function loadIdCounter() {
+  try {
+    const idCounterJSON = readFileSync('data/id-counter.json', 'utf-8')
+    const { count } = JSON.parse(idCounterJSON)
+
+    return count
+  } catch {
+    return 1
+  }
+}
+
+function saveIdCounter() {
+  const idCounterJSON = JSON.stringify({ count: idCounter, nextId: idCounter.toString(36).padStart(5, '0') }, null, 2)
+
+  return writeFile('data/id-counter.json', idCounterJSON)
+}
+
+function getNextId() {
+  const nextCount = idCounter++
+  const nextId = nextCount.toString(36).padStart(5, '0')
+
+  saveIdCounter()
+
+  return nextId
+}
+
+function loadNodes() {
+  try {
+    const nodesJSON = readFileSync('data/nodes.json', 'utf-8')
+    const nodes = JSON.parse(nodesJSON)
+
+    return nodes
+  } catch {
+    return []
+  }
+}
+
+function saveNodes() {
+  const nodesJSON = JSON.stringify(nodes, null, 2)
+
+  return writeFile('data/nodes.json', nodesJSON)
+}
 
 function handleRequest(request, response) {
   if (request.url.startsWith('/api/')) {
@@ -22,10 +70,49 @@ function notifyServerStarted() {
   console.log(`Server started at http://localhost:${port}`)
 }
 
-function handleApiRequest(request, response) {
-  const fakeNode = { id: 1, name: 'Fake Node' }
-  response.end(JSON.stringify(fakeNode))
-  // response.end('Hello from API')
+async function handleApiRequest(request, response) {
+  const { method, url } = request
+  const route = method + ' ' + url
+
+  try {
+    switch (route) {
+      case 'GET /api/nodes':
+        response.end(JSON.stringify(nodes))
+        break
+  
+      case 'POST /api/nodes':
+        const body = await getBody(request)
+        let node = JSON.parse(body)
+        const { name } = node
+  
+        if (!name) throw 'Name is required'
+  
+        node = { id: getNextId(), name }
+        nodes.push(node)
+        saveNodes()
+        response.end(JSON.stringify(node))
+        break
+  
+      default:
+        const json = JSON.stringify({ complaint: 'route not found' })
+
+        response.statusCode = 404 
+        response.end(json)
+    }
+  } catch (err) {
+    const json = JSON.stringify({ complaint: err.message })
+
+    response.statusCode = 400
+    response.end(json)
+  }
+}
+
+async function getBody(request) {
+  let body = ''
+
+  for await (const chunk of request) body += chunk
+
+  return body
 }
 
 async function handleStaticRequest(request, response) {
