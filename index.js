@@ -4,6 +4,7 @@ const { createServer } = require('http')
 const { readFile } = require('fs/promises')
 const server = createServer()
 const port = process.env.PORT
+const env = process.env.NODE_ENV
 
 server.on('request', handleRequest)
 
@@ -28,12 +29,15 @@ function handleApiRequest(request, response) {
 }
 
 async function handleStaticRequest(request, response) {
-  const path = request.url.slice(1) || 'index.html'
+  let path = request.url.slice(1) || 'index.html'
 
   try {
     if (await isNonPublic(path)) throw 404
     
     try {
+      if (env == 'dev' && path == 'favicon.ico') {
+        path = 'favicon-dev.ico'
+      }
       const fileContent = await readFile(path)
 
       response.end(fileContent)
