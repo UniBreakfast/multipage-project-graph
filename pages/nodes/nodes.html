@@ -8,7 +8,7 @@
   <!-- <link rel="stylesheet" href="reset.css"> -->
   <!-- <link rel="stylesheet" href="base.css"> -->
   <!-- <link rel="stylesheet" href="style.css"> -->
-  <!-- <script src="script.js" defer></script> -->
+  <script src="/pages/nodes/nodes.js" defer></script>
   <!-- <script type="module" src="app.js"></script> -->
 
   <title>Nodes</title>
@@ -18,7 +18,18 @@
   <select id="page-select">
     <script src="/pages/common/page-select.js"></script>
   </select>
+
+  <hr>
+
   <h1>Nodes</h1>
+
+  <form action="javascript:" id="nodes-form">
+    <select name="nodes" multiple>
+      <template>
+        <option value=""></option>
+      </template>
+    </select>
+  </form>
 </body>
 
 </html>
