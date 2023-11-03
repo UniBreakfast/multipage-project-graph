@@ -14,7 +14,7 @@ async function handleAddNodeSubmit() {
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify(data),
   }
-  const result = await fetch('/api/node', init)
+  const result = await fetch('/api/nodes', init)
 
   handleFirstFeedback()
   
@@ -25,7 +25,7 @@ async function handleAddNodeSubmit() {
   } else {
     const problem = await result.json()
 
-    tellProblem(problem)
+    tellProblem(problem.complaint)
   }
 }
 
