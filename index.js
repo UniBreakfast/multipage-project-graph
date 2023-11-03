@@ -1,7 +1,9 @@
+try { require('./.env.js') } catch {}
+
 const { createServer } = require('http')
 const { readFile } = require('fs/promises')
 const server = createServer()
-const port = 7843
+const port = process.env.PORT
 
 server.on('request', handleRequest)
 
@@ -20,28 +22,39 @@ function notifyServerStarted() {
 }
 
 function handleApiRequest(request, response) {
-  response.end('Hello from API')
+  const fakeNode = { id: 1, name: 'Fake Node' }
+  response.end(JSON.stringify(fakeNode))
+  // response.end('Hello from API')
 }
 
 async function handleStaticRequest(request, response) {
   const path = request.url.slice(1) || 'index.html'
-  
-  try {
-    const fileContent = await readFile('public/' + path)
 
-    response.end(fileContent)
-  } catch {
+  try {
+    if (await isNonPublic(path)) throw 404
+    
     try {
+      const fileContent = await readFile(path)
+
+      response.end(fileContent)
+    } catch {
       if (/^pages\/[\w-]/.test(path)) {
         const pageName = path.split('/')[1]
-        const actualPath = `public/${path}/${pageName}.html`
+        const actualPath = `${path}/${pageName}.html`
         const fileContent = await readFile(actualPath)
-  
+
         response.end(fileContent)
-      } else throw 404
-    } catch {
-      response.statusCode = 404
-      response.end('File not found: /' + path)
+      }
     }
+  } catch {
+    response.statusCode = 404
+    response.end('File not found: /' + path)
   }
+}
+
+async function isNonPublic(path) {
+  const nonPublicPaths = (await readFile('.nonpublic', 'utf-8')).split(/\r?\n/).filter(Boolean)
+  const nonPublic = nonPublicPaths.some(str => path.startsWith(str))
+  
+  return nonPublic
 }
