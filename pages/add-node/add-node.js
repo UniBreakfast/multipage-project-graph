@@ -1,11 +1,39 @@
 const addNodeForm = document.getElementById('add-node-form')
+const nodeTypesSelect = addNodeForm.type
+const nodeTypeOptionTemplate = nodeTypesSelect.querySelector('template')
 const details = document.getElementById('add-node-details')
 const singleFeedback = details.previousElementSibling
 const firstFeedback = details.querySelector('b')
 const restOfLines = details.querySelector('ul')
 const feedbackTemplate = details.querySelector('template')
 
+getNodeTypes().then(fillNodeTypesSelect)
+
 addNodeForm.onsubmit = handleAddNodeSubmit
+
+function getNodeTypes() {
+  return fetch('/api/node-types')
+    .then(result => result.json())
+}
+
+function fillNodeTypesSelect(nodeTypes) {
+  nodeTypes.forEach(nodeType => {
+    const { option } = useNodeTypeOptionTemplate()
+    const { id, type } = nodeType
+
+    option.value = id
+    option.textContent = type
+
+    nodeTypesSelect.append(option)
+  })
+}
+
+function useNodeTypeOptionTemplate() {
+  const { content } = nodeTypeOptionTemplate
+  const option = content.firstElementChild.cloneNode(true)
+
+  return { option }
+}
 
 async function handleAddNodeSubmit() {
   const payload = Object.fromEntries(new FormData(addNodeForm))
