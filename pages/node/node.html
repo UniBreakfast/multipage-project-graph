@@ -24,11 +24,17 @@
   <h1>Node</h1>
 
   <form action="javascript:" id="node-form">
-    <input type="hidden" name="id">
+    <select name="id" required>
+      <template>
+        <option value=""></option>
+      </template>
+    </select>
+
+    <br><br>
 
     <label>
       Node type:
-      <select name="type">
+      <select name="type" required>
         <template>
           <option value=""></option>
         </template>
@@ -43,9 +49,9 @@
     </label>
 
     <ul>
-      <button>Save changes</button>
-      <button>Revert</button>
-      <button>Delete</button>
+      <button value="save">Save changes</button>
+      <button value="revert">Revert</button>
+      <button value="delete">Delete</button>
     </ul>
   </form>
 
@@ -62,7 +68,11 @@
 
     <ul>
       <template>
-        <li></li>
+        <li>
+          <button title="id"></button>
+          <a href="#"></a>
+          <span>updated</span>
+        </li>
       </template>
     </ul>
   </details>
