@@ -42,7 +42,14 @@ function listenForPageSelectChange() {
 
 function handlePageSelectChange(e) {
   const page = e.target.value
-  const path = page ? '/pages/' + page : '/'
+  
+  goTo(page)
+}
+
+function goTo(pageName, id) {
+  if (!pageName) return
+
+  const path = `/pages/${pageName}${id ? '#' + id : ''}`
 
   location.assign(path)
 }
