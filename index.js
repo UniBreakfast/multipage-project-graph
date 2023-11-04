@@ -150,11 +150,30 @@ async function handleApiRequest(request, response) {
         response.end(JSON.stringify(node))
         break
       }
+      case 'PUT /api/nodes': {
+        const body = await getBody(request)
+        let node = JSON.parse(body)
+        const { id, name, type: typeId } = node
+
+        if (!id) throw 'Id is required'
+        if (!name) throw 'Name is required'
+        if (!typeId) throw 'Type is required'
+
+        const index = nodes.findIndex(node => node.id == id)
+
+        if (index == -1) throw 'Node not found'
+
+        node = { id, name, typeId }
+        nodes[index] = node
+        saveNodes()
+        response.end(JSON.stringify(node))
+        break
+      }
       case 'DELETE /api/nodes': {
         const body = await getBody(request)
         const nodeIds = JSON.parse(body)
 
-        if (!nodeIds.length) throw 'No node ids provided'
+        if (!nodeIds.length) throw 'No node ids provided - nothing to delete'
 
         const nodesToDelete = nodes.filter(node => nodeIds.includes(node.id))
 
@@ -171,7 +190,7 @@ async function handleApiRequest(request, response) {
       }
     }
   } catch (err) {
-    const json = JSON.stringify({ complaint: err.message })
+    const json = JSON.stringify({ complaint: err.message || err })
 
     response.statusCode = 400
     response.end(json)
