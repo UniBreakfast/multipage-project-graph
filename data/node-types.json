@@ -1,0 +1,22 @@
+[
+  {
+    "id": "00009",
+    "type": "variable"
+  },
+  {
+    "id": "0000a",
+    "type": "function"
+  },
+  {
+    "id": "0000b",
+    "type": "file"
+  },
+  {
+    "id": "0000c",
+    "type": "folder"
+  },
+  {
+    "id": "0000d",
+    "type": "constant"
+  }
+]
