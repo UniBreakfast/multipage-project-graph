@@ -1,4 +1,4 @@
-try { require('./.env.js') } catch {}
+try { require('./.env.js') } catch { }
 
 const { createServer } = require('http')
 const { readFile, writeFile } = require('fs/promises')
@@ -88,8 +88,9 @@ function notifyServerStarted() {
 }
 
 async function handleApiRequest(request, response) {
-  const { method, url } = request
-  const route = method + ' ' + url
+  let { method, url } = request
+  let [urlPart, id] = url.split(/(?<=\/.+\/.+)\//)
+  const route = method + ' ' + urlPart
 
   try {
     switch (route) {
@@ -124,17 +125,25 @@ async function handleApiRequest(request, response) {
         break
       }
       case 'GET /api/nodes': {
-        response.end(JSON.stringify(nodes))
+        if (id) {
+          const node = nodes.find(node => node.id == id)
+
+          if (!node) throw 'Node not found'
+
+          response.end(JSON.stringify(node))
+        } else {
+          response.end(JSON.stringify(nodes))
+        }
         break
       }
       case 'POST /api/nodes': {
         const body = await getBody(request)
         let node = JSON.parse(body)
         const { name, type: typeId } = node
-  
+
         if (!name) throw 'Name is required'
         if (!typeId) throw 'Type is required'
-  
+
         node = { id: getNextId(), name, typeId }
         nodes.push(node)
         saveNodes()
@@ -146,7 +155,7 @@ async function handleApiRequest(request, response) {
         const nodeIds = JSON.parse(body)
 
         if (!nodeIds.length) throw 'No node ids provided'
-        
+
         const nodesToDelete = nodes.filter(node => nodeIds.includes(node.id))
 
         nodes = nodes.filter(node => !nodeIds.includes(node.id))
@@ -157,7 +166,7 @@ async function handleApiRequest(request, response) {
       default: {
         const json = JSON.stringify({ complaint: 'route not found' })
 
-        response.statusCode = 404 
+        response.statusCode = 404
         response.end(json)
       }
     }
@@ -182,7 +191,7 @@ async function handleStaticRequest(request, response) {
 
   try {
     if (await isNonPublic(path)) throw 404
-    
+
     try {
       if (env == 'dev' && path == 'favicon.ico') {
         path = 'favicon-dev.ico'
@@ -208,6 +217,6 @@ async function handleStaticRequest(request, response) {
 async function isNonPublic(path) {
   const nonPublicPaths = (await readFile('.nonpublic', 'utf-8')).split(/\r?\n/).filter(Boolean)
   const nonPublic = nonPublicPaths.some(str => path.startsWith(str))
-  
+
   return nonPublic
 }
