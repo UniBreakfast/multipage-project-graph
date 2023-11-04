@@ -11,6 +11,17 @@ getNodes().then(fillNodesSelect)
 
 nodesForm.onsubmit = handleNodesFormSubmit
 
+nodesSelect.ondblclick = handleNodesSelectDblClick
+
+function handleNodesSelectDblClick(e) {
+  const { target } = e
+  const { value } = target
+
+  if (!value) return
+
+  goTo('node', value)
+}
+
 function handleNodesFormSubmit(e) {
   const button = e.submitter
   const action = button.value
@@ -19,6 +30,8 @@ function handleNodesFormSubmit(e) {
 
   if (action === 'delete') {
     deleteNodes(nodeIds)
+  } else if (action === 'details') {
+    goTo('node', nodeIds[0])
   }
 }
 
