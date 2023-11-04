@@ -88,19 +88,18 @@ function removeNodeOption(node) {
   option?.remove()
 }
 
-function tellProblem(problem) {
+function tellProblem(complaint) {
   const { li } = useFeedbackTemplate()
 
   li.replaceChildren(...firstFeedback.childNodes)
   restOfLines.prepend(li)
-  firstFeedback.textContent = problem.complaint
+  firstFeedback.textContent = complaint
 }
 
 function useFeedbackTemplate() {
   const { content } = feedbackTemplate
   const li = content.firstElementChild.cloneNode(true)
-  const btn = li.firstElementChild
-  const a = btn.nextElementSibling
+  const { btn, a } = li.children
 
   return { li, btn, a }
 }
