@@ -130,11 +130,12 @@ async function handleApiRequest(request, response) {
       case 'POST /api/nodes': {
         const body = await getBody(request)
         let node = JSON.parse(body)
-        const { name } = node
+        const { name, type: typeId } = node
   
         if (!name) throw 'Name is required'
+        if (!typeId) throw 'Type is required'
   
-        node = { id: getNextId(), name }
+        node = { id: getNextId(), name, typeId }
         nodes.push(node)
         saveNodes()
         response.end(JSON.stringify(node))
