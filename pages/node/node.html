@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head id="head">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+
+  <!-- <link rel="stylesheet" href="reset.css"> -->
+  <!-- <link rel="stylesheet" href="base.css"> -->
+  <!-- <link rel="stylesheet" href="style.css"> -->
+  <script src="/pages/node/node.js" defer></script>
+  <!-- <script type="module" src="app.js"></script> -->
+
+  <title>Node</title>
+</head>
+
+<body id="body">
+  <select id="page-select">
+    <script src="/pages/common/page-select.js"></script>
+  </select>
+
+  <hr>
+
+  <h1>Node</h1>
+
+  <form action="javascript:" id="node-form">
+    <input type="hidden" name="id">
+
+    <label>
+      Node type:
+      <select name="type">
+        <template>
+          <option value=""></option>
+        </template>
+      </select>
+    </label>
+
+    <br><br>
+    
+    <label>
+      Node name:
+      <input type="text" name="name" required autocomplete="off">
+    </label>
+
+    <ul>
+      <button>Save changes</button>
+      <button>Revert</button>
+      <button>Delete</button>
+    </ul>
+  </form>
+
+  <hr>
+
+  <b>
+    Edit node details and save changes. Or delete the node if it is no longer needed.
+  </b>
+
+  <details id="node-details" hidden>
+    <summary>
+      <b></b>
+    </summary>
+
+    <ul>
+      <template>
+        <li></li>
+      </template>
+    </ul>
+  </details>
+</body>
+
+</html>
