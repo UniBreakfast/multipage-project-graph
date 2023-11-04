@@ -7,13 +7,30 @@ const server = createServer()
 const port = process.env.PORT
 const env = process.env.NODE_ENV
 
+let nodeTypes = loadNodeTypes()
 let nodes = loadNodes()
-
 let idCounter = loadIdCounter()
 
 server.on('request', handleRequest)
 
 server.listen(port, notifyServerStarted)
+
+function loadNodeTypes() {
+  try {
+    const nodeTypesJSON = readFileSync('data/node-types.json', 'utf-8')
+    const nodeTypes = JSON.parse(nodeTypesJSON)
+
+    return nodeTypes
+  } catch {
+    return []
+  }
+}
+
+function saveNodeTypes() {
+  const nodeTypesJSON = JSON.stringify(nodeTypes, null, 2)
+
+  return writeFile('data/node-types.json', nodeTypesJSON)
+}
 
 function loadIdCounter() {
   try {
@@ -76,10 +93,40 @@ async function handleApiRequest(request, response) {
 
   try {
     switch (route) {
-      case 'GET /api/nodes':
+      case 'GET /api/node-types': {
+        response.end(JSON.stringify(nodeTypes))
+        break
+      }
+      case 'POST /api/node-types': {
+        const body = await getBody(request)
+        let nodeType = JSON.parse(body)
+        const { type } = nodeType
+
+        if (!type) throw 'Type is required'
+
+        nodeType = { id: getNextId(), type }
+        nodeTypes.push(nodeType)
+        saveNodeTypes()
+        response.end(JSON.stringify(nodeType))
+        break
+      }
+      case 'DELETE /api/node-types': {
+        const body = await getBody(request)
+        const nodeTypeIds = JSON.parse(body)
+
+        if (!nodeTypeIds.length) throw 'No node type ids provided'
+
+        const nodeTypesToDelete = nodeTypes.filter(nodeType => nodeTypeIds.includes(nodeType.id))
+
+        nodeTypes = nodeTypes.filter(nodeType => !nodeTypeIds.includes(nodeType.id))
+        saveNodeTypes()
+        response.end(JSON.stringify(nodeTypesToDelete))
+        break
+      }
+      case 'GET /api/nodes': {
         response.end(JSON.stringify(nodes))
         break
-  
+      }
       case 'POST /api/nodes': {
         const body = await getBody(request)
         let node = JSON.parse(body)
@@ -106,11 +153,12 @@ async function handleApiRequest(request, response) {
         response.end(JSON.stringify(nodesToDelete))
         break
       }
-      default:
+      default: {
         const json = JSON.stringify({ complaint: 'route not found' })
 
         response.statusCode = 404 
         response.end(json)
+      }
     }
   } catch (err) {
     const json = JSON.stringify({ complaint: err.message })
