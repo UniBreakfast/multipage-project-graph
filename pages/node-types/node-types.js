@@ -116,8 +116,6 @@ function fillNodeTypesSelect(nodeTypes) {
   })
 }
 
-
-
 function useNodeTypeOptionTemplate() {
   const { content } = nodeTypeOptionTemplate
   const option = content.firstElementChild.cloneNode(true)
