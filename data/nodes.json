@@ -1,1 +1,22 @@
-[]
+[
+  {
+    "id": "00013",
+    "name": "multipage-project-graph",
+    "typeId": "00011"
+  },
+  {
+    "id": "00014",
+    "name": "index.js",
+    "typeId": "00012"
+  },
+  {
+    "id": "00015",
+    "name": "favicon.ico",
+    "typeId": "00012"
+  },
+  {
+    "id": "00016",
+    "name": "index.html",
+    "typeId": "00012"
+  }
+]
