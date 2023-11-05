@@ -33,14 +33,17 @@ async function deleteNodeTypes(nodeTypeIds) {
   handleFirstFeedback()
 
   if (result.ok) {
-    const nodeTypes = await result.json()
+    const {nodes, types: nodeTypes} = await result.json()
 
     nodeTypes.reverse()
+    nodes.reverse()
 
     nodeTypes.forEach(nodeType => {
       tellNodeType(nodeType)
       removeNodeTypeOption(nodeType)
     })
+
+    nodes.forEach(node => tellNode(node))
   } else {
     const problem = await result.json()
 
@@ -58,11 +61,24 @@ function handleFirstFeedback() {
 }
 
 function tellNodeType(nodeType) {
-  const { li, btn, a } = useFeedbackTemplate()
+  const { li, btn, a, span } = useFeedbackTemplate()
   const children = [...li.childNodes]
 
   btn.textContent = nodeType.id
   a.textContent = nodeType.type
+  span.textContent = 'type deleted'
+
+  li.replaceChildren(...firstFeedback.childNodes)
+  restOfLines.prepend(li)
+  firstFeedback.replaceChildren(...children)
+}
+
+function tellNode(node) {
+  const { li, btn, a } = useFeedbackTemplate()
+  const children = [...li.childNodes]
+
+  btn.textContent = node.id
+  a.textContent = node.name
 
   li.replaceChildren(...firstFeedback.childNodes)
   restOfLines.prepend(li)
@@ -86,10 +102,9 @@ function tellProblem(problem) {
 function useFeedbackTemplate() {
   const { content } = feedbackTemplate
   const li = content.firstElementChild.cloneNode(true)
-  const btn = li.firstElementChild
-  const a = btn.nextElementSibling
+  const [btn, a, span] = li.children
 
-  return { li, btn, a }
+  return { li, btn, a, span }
 }
 
 async function getNodeTypes() {
