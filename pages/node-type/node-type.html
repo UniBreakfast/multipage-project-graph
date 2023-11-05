@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head id="head">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+
+  <!-- <link rel="stylesheet" href="reset.css"> -->
+  <!-- <link rel="stylesheet" href="base.css"> -->
+  <!-- <link rel="stylesheet" href="style.css"> -->
+  <script src="/pages/node-type/node-type.js" defer></script>
+  <!-- <script type="module" src="app.js"></script> -->
+
+  <title>Node Type</title>
+</head>
+
+<body id="body">
+  <select id="page-select">
+    <script src="/pages/common/page-select.js"></script>
+  </select>
+
+  <hr>
+
+  <h1>Node Type</h1>
+
+  <form action="javascript:" id="node-type-form">
+    <select name="id" required>
+      <template>
+        <option value=""></option>
+      </template>
+    </select>
+
+    <br><br>
+    
+    <label>
+      Node type:
+      <input type="text" name="type" required autocomplete="off">
+    </label>
+
+    <ul>
+      <button value="save">Save changes</button>
+      <button value="revert">Revert</button>
+      <button value="delete">Delete</button>
+    </ul>
+  </form>
+
+  <hr>
+
+  <b>
+    Edit node type details and save changes. Or delete the node type if it is no longer needed. But keep in mind that deleting a node type will also delete all nodes of that type.
+  </b>
+
+  <details id="node-type-details" hidden>
+    <summary>
+      <b></b>
+    </summary>
+
+    <ul>
+      <template>
+        <li>
+          <button title="id"></button>
+          <a href="#"></a>
+          <span>updated</span>
+        </li>
+      </template>
+    </ul>
+  </details>
+</body>
+
+</html>
