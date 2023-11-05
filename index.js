@@ -15,78 +15,6 @@ server.on('request', handleRequest)
 
 server.listen(port, notifyServerStarted)
 
-function loadNodeTypes() {
-  try {
-    const nodeTypesJSON = readFileSync('data/node-types.json', 'utf-8')
-    const nodeTypes = JSON.parse(nodeTypesJSON)
-
-    return nodeTypes
-  } catch {
-    return []
-  }
-}
-
-function saveNodeTypes() {
-  const nodeTypesJSON = JSON.stringify(nodeTypes, null, 2)
-
-  return writeFile('data/node-types.json', nodeTypesJSON)
-}
-
-function loadIdCounter() {
-  try {
-    const idCounterJSON = readFileSync('data/id-counter.json', 'utf-8')
-    const { count } = JSON.parse(idCounterJSON)
-
-    return count
-  } catch {
-    return 1
-  }
-}
-
-function saveIdCounter() {
-  const idCounterJSON = JSON.stringify({ count: idCounter, nextId: idCounter.toString(36).padStart(5, '0') }, null, 2)
-
-  return writeFile('data/id-counter.json', idCounterJSON)
-}
-
-function getNextId() {
-  const nextCount = idCounter++
-  const nextId = nextCount.toString(36).padStart(5, '0')
-
-  saveIdCounter()
-
-  return nextId
-}
-
-function loadNodes() {
-  try {
-    const nodesJSON = readFileSync('data/nodes.json', 'utf-8')
-    const nodes = JSON.parse(nodesJSON)
-
-    return nodes
-  } catch {
-    return []
-  }
-}
-
-function saveNodes() {
-  const nodesJSON = JSON.stringify(nodes, null, 2)
-
-  return writeFile('data/nodes.json', nodesJSON)
-}
-
-function handleRequest(request, response) {
-  if (request.url.startsWith('/api/')) {
-    handleApiRequest(request, response)
-  } else {
-    handleStaticRequest(request, response)
-  }
-}
-
-function notifyServerStarted() {
-  console.log(`Server started at http://localhost:${port}`)
-}
-
 async function handleApiRequest(request, response) {
   let { method, url } = request
   let [urlPart, id] = url.split(/(?<=\/.+\/.+)\//)
@@ -95,7 +23,15 @@ async function handleApiRequest(request, response) {
   try {
     switch (route) {
       case 'GET /api/node-types': {
-        response.end(JSON.stringify(nodeTypes))
+        if (id) {
+          const nodeType = nodeTypes.find(nodeType => nodeType.id == id)
+
+          if (!nodeType) throw 'Node type not found'
+
+          response.end(JSON.stringify(nodeType))
+        } else {
+          response.end(JSON.stringify(nodeTypes))
+        }
         break
       }
       case 'POST /api/node-types': {
@@ -111,6 +47,24 @@ async function handleApiRequest(request, response) {
         response.end(JSON.stringify(nodeType))
         break
       }
+      case 'PUT /api/node-types': {
+        const body = await getBody(request)
+        let nodeType = JSON.parse(body)
+        const { id, type } = nodeType
+
+        if (!id) throw 'Id is required'
+        if (!type) throw 'Type is required'
+
+        const index = nodeTypes.findIndex(nodeType => nodeType.id == id)
+
+        if (index == -1) throw 'Node type not found'
+
+        nodeType = { id, type }
+        nodeTypes[index] = nodeType
+        saveNodeTypes()
+        response.end(JSON.stringify(nodeType))
+        break
+      }
       case 'DELETE /api/node-types': {
         const body = await getBody(request)
         const nodeTypeIds = JSON.parse(body)
@@ -118,10 +72,13 @@ async function handleApiRequest(request, response) {
         if (!nodeTypeIds.length) throw 'No node type ids provided'
 
         const nodeTypesToDelete = nodeTypes.filter(nodeType => nodeTypeIds.includes(nodeType.id))
+        const nodesToDelete = nodes.filter(node => nodeTypeIds.includes(node.typeId))
 
         nodeTypes = nodeTypes.filter(nodeType => !nodeTypeIds.includes(nodeType.id))
+        nodes = nodes.filter(node => !nodeTypeIds.includes(node.typeId))
         saveNodeTypes()
-        response.end(JSON.stringify(nodeTypesToDelete))
+        saveNodes()
+        response.end(JSON.stringify({nodes: nodesToDelete, types: nodeTypesToDelete}))
         break
       }
       case 'GET /api/nodes': {
@@ -195,6 +152,78 @@ async function handleApiRequest(request, response) {
     response.statusCode = 400
     response.end(json)
   }
+}
+
+function loadNodeTypes() {
+  try {
+    const nodeTypesJSON = readFileSync('data/node-types.json', 'utf-8')
+    const nodeTypes = JSON.parse(nodeTypesJSON)
+
+    return nodeTypes
+  } catch {
+    return []
+  }
+}
+
+function saveNodeTypes() {
+  const nodeTypesJSON = JSON.stringify(nodeTypes, null, 2)
+
+  return writeFile('data/node-types.json', nodeTypesJSON)
+}
+
+function loadIdCounter() {
+  try {
+    const idCounterJSON = readFileSync('data/id-counter.json', 'utf-8')
+    const { count } = JSON.parse(idCounterJSON)
+
+    return count
+  } catch {
+    return 1
+  }
+}
+
+function saveIdCounter() {
+  const idCounterJSON = JSON.stringify({ count: idCounter, nextId: idCounter.toString(36).padStart(5, '0') }, null, 2)
+
+  return writeFile('data/id-counter.json', idCounterJSON)
+}
+
+function getNextId() {
+  const nextCount = idCounter++
+  const nextId = nextCount.toString(36).padStart(5, '0')
+
+  saveIdCounter()
+
+  return nextId
+}
+
+function loadNodes() {
+  try {
+    const nodesJSON = readFileSync('data/nodes.json', 'utf-8')
+    const nodes = JSON.parse(nodesJSON)
+
+    return nodes
+  } catch {
+    return []
+  }
+}
+
+function saveNodes() {
+  const nodesJSON = JSON.stringify(nodes, null, 2)
+
+  return writeFile('data/nodes.json', nodesJSON)
+}
+
+function handleRequest(request, response) {
+  if (request.url.startsWith('/api/')) {
+    handleApiRequest(request, response)
+  } else {
+    handleStaticRequest(request, response)
+  }
+}
+
+function notifyServerStarted() {
+  console.log(`Server started at http://localhost:${port}`)
 }
 
 async function getBody(request) {
