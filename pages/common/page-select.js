@@ -47,7 +47,7 @@ function handlePageSelectChange(e) {
 }
 
 function goTo(pageName, id) {
-  if (!pageName) return
+  if (!pageName) return location.assign('/')
 
   const path = `/pages/${pageName}${id ? '#' + id : ''}`
 
