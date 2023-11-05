@@ -50,6 +50,7 @@ async function handleAddNodeSubmit() {
     const node = await result.json()
 
     tellNode(node)
+    nodeTypesSelect.querySelector(`[value="${node.typeId}"]`).toggleAttribute('selected')
     addNodeForm.reset()
   } else {
     const problem = await result.json()
