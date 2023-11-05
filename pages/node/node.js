@@ -148,7 +148,7 @@ async function deleteNode() {
     const [node] = await result.json()
 
     tellNode(node, 'delete')
-    removeNodeOption(node)
+    removeNodeTypeOption(node)
     getCurrentNodeId().then(getNode).then(actualizeNodeForm)
   } else {
     const problem = await result.json()
@@ -199,7 +199,7 @@ function tellNode(node, action = 'save') {
   firstFeedback.replaceChildren(...children)
 }
 
-function removeNodeOption(node) {
+function removeNodeTypeOption(node) {
   const option = nodeSelect.querySelector(`option[value="${node.id}"]`)
 
   option?.remove()
