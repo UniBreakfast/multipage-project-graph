@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head id="head">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+
+  <!-- <link rel="stylesheet" href="reset.css"> -->
+  <!-- <link rel="stylesheet" href="base.css"> -->
+  <!-- <link rel="stylesheet" href="style.css"> -->
+  <script src="/pages/add-node-prop/add-node-prop.js" defer></script>
+  <!-- <script type="module" src="app.js"></script> -->
+
+  <title>Add Node Property</title>
+</head>
+
+<body id="body">
+  <select id="page-select">
+    <script src="/pages/common/page-select.js"></script>
+  </select>
+
+  <hr>
+
+  <h1>Add Node Property</h1>
+
+  <form action="javascript:" id="add-node-prop-form">
+    <label>
+      Node property UI name:
+      <input type="text" name="prop" required autocomplete="off">
+    </label>
+
+    <br><br>
+
+    <label>
+      Property key:
+      <input type="text" name="key" required autocomplete="off">
+    </label>
+
+    <br><br>
+
+    <label>
+      Possible values:
+      <select name="values">
+        <option value="boolean">boolean</option>
+        <option value="enum" selected>options</option>
+        <option value="string">string</option>
+        <option value="number">number</option>
+        <option value="datetime">date/time</option>
+        <option value="color">color</option>        
+      </select>
+    </label>
+
+    <br><br>
+
+    <div name="boolean" hidden>
+      <label>
+        Default value:
+        <select name="default">
+          <option value="true">true</option>
+          <option value="false" selected>false</option>
+        </select>
+      </label>
+    </div>
+
+    <div name="enum">
+      <label>
+        <input type="checkbox" name="multiple">
+        Multiple values allowed<br>
+        Lines to display:
+        <select name="rows" disabled>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8" selected>8</option>
+          <option value="9">9</option>
+          <option value="10">10</option>
+          <option value="11">11</option>
+          <option value="12">12</option>
+          <option value="13">13</option>
+          <option value="14">14</option>
+          <option value="15">15</option>
+          <option value="16">16</option>
+        </select>
+      </label>
+
+      <br><br>
+
+      <label>
+        <input type="checkbox" name="required">
+        Requires selected option
+      </label>
+
+      <br><br>
+      
+      <label>
+        <div>Options on separate lines:</div>
+        <textarea name="options" rows="6" cols="30"></textarea>
+      </label>
+
+      <br>
+
+      <label>
+        <input type="checkbox" name="custom">
+        Allow custom option
+      </label>
+    </div>
+
+    <div name="string" hidden>
+      <label>
+        <input type="checkbox" name="multiline">
+        Multiline<br>
+        Lines to display:
+        <select name="rows" disabled>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6" selected>6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10">10</option>
+          <option value="11">11</option>
+          <option value="12">12</option>
+          <option value="13">13</option>
+          <option value="14">14</option>
+          <option value="15">15</option>
+          <option value="16">16</option>
+        </select>
+      </label>
+
+      <br><br>
+
+      <label>
+        <input type="checkbox" name="required">
+        Requires some input
+      </label>
+
+      <br><br>
+
+      <label>
+        <input type="checkbox" name="minlength">
+        Minimum length:
+        <input type="number" name="min" min="0" disabled>
+      </label>
+
+      <br><br>
+
+      <label>
+        <input type="checkbox" name="maxlength">
+        Maximum length
+        <input type="number" name="max" min="0" disabled>
+      </label>
+
+      <br><br>
+
+      <label>
+        <input type="checkbox" name="placeholder-box">
+        Placeholder
+        <input type="text" name="placeholder" disabled>
+      </label>
+
+      <br><br>
+
+      <label>
+        <input type="checkbox" name="default-box">
+        Default value
+        <input type="text" name="default" disabled>
+      </label>
+    </div>
+
+    <div name="number" hidden>
+      <label>
+        <input type="checkbox" name="required">
+        Requires some input
+      </label>
+
+      <br><br>
+
+      <label>
+        <input type="checkbox" name="min-box">
+        Minimum value:
+        <input type="number" name="min" disabled>
+      </label>
+
+      <br><br>
+
+      <label>
+        <input type="checkbox" name="max-box">
+        Maximum value:
+        <input type="number" name="max" disabled>
+      </label>
+
+      <br><br>
+
+      <label>
+        <input type="checkbox" name="placeholder-box">
+        Placeholder
+        <input type="text" name="placeholder" disabled>
+      </label>
+
+      <br><br>
+
+      <label>
+        <input type="checkbox" name="default-box">
+        Default value
+        <input type="number" name="default" disabled>
+      </label>
+    </div>
+
+    <div name="datetime" hidden>
+      <label>
+        Format:
+        <select name="format">
+          <option value="datetime-local" selected>date with time</option>
+          <option value="date">date</option>
+          <option value="time">time</option>
+          <option value="month">month</option>
+          <option value="week">week</option>
+        </select>
+      </label>
+
+      <br><br>
+
+      <label>
+        <input type="checkbox" name="required">
+        Requires some input
+      </label>
+
+      <br><br>
+
+      <label>
+        <input type="checkbox" name="min-box">
+        Minimum value:
+        <input type="datetime-local" name="min" disabled>
+      </label>
+
+      <br><br>
+
+      <label>
+        <input type="checkbox" name="max-box">
+        Maximum value:
+        <input type="datetime-local" name="max" disabled>
+      </label>
+
+      <br><br>
+
+      <label>
+        <input type="checkbox" name="default-box">
+        Default to current date/time
+      </label>
+    </div>
+
+    <div name="color" hidden>
+      <label>
+        Format:
+        <select name="format">
+          <option value="picker" selected>color picker</option>
+          <option value="named">named colors</option>
+          <option value="hex">hex input</option>
+        </select>
+      </label>
+
+      <br><br>
+
+      <label>
+        <input type="checkbox" name="required">
+        Requires some input
+      </label>
+
+      <br><br>
+
+      <label>
+        <input type="checkbox" name="default-box">
+        Default value
+        <input type="text" name="default-hex" value="#000000" disabled>
+        <input type="color" name="default" value="#000000" disabled>
+      </label>
+    </div>
+
+    <ul>
+      <button>Add</button>
+    </ul>
+  </form>
+
+  <hr>
+
+  <b>
+    Add a new node proprety to the project. Node properties are used to describe the different properties of nodes in the project. Node properties are associated with node types. 
+  </b>
+
+  <details id="add-node-prop-details" hidden>
+    <summary>
+      <b>
+        <button>00a3e</button>
+        <a href="#">constant</a>
+        <span>property added</span>
+      </b>
+    </summary>
+
+    <ul>
+      <li>Node type required</li>
+      <li>
+        <button title="id">00a3e</button>
+        <a href="/pages/node-type#">variable</a>
+        <span>type added</span>
+      </li>
+      <li>Node type required</li>
+      <template>
+        <li>
+          <button title="id"></button>
+          <a href="/pages/node-type#"></a>
+          <span>type added</span>
+        </li>
+      </template>
+    </ul>
+  </details>
+</body>
+
+</html>
