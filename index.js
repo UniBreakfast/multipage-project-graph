@@ -7,9 +7,19 @@ const server = createServer()
 const port = process.env.PORT
 const env = process.env.NODE_ENV
 
+let nodeProps = loadNodeProps()
 let nodeTypes = loadNodeTypes()
 let nodes = loadNodes()
 let idCounter = loadIdCounter()
+
+const possiblePropKeys = {
+  boolean: ['default'],
+  enum: ['multiple', 'rows', 'required', 'options', 'custom'],
+  string: ['multiline', 'rows', 'required', 'minlength', 'maxlength', 'placeholder', 'default'],
+  number: ['required', 'min', 'max', 'placeholder', 'default'],
+  datetime: ['format', 'required', 'min', 'max', 'nowByDefault'],
+  color: ['format', 'required', 'default'],
+}
 
 server.on('request', handleRequest)
 
@@ -22,6 +32,43 @@ async function handleApiRequest(request, response) {
 
   try {
     switch (route) {
+      case 'GET /api/node-props': {
+        if (id) {
+          const nodeProp = nodeProps.find(nodeProp => nodeProp.id == id)
+
+          if (!nodeProp) throw 'Node prop not found'
+
+          response.end(JSON.stringify(nodeProp))
+        } else {
+          response.end(JSON.stringify(nodeProps))
+        }
+        break
+      }
+      case 'POST /api/node-props': {
+        const body = await getBody(request)
+        let nodeProp = JSON.parse(body)
+        let { prop, key, type, ...rest } = nodeProp
+
+        if (!prop) throw 'Property name is required'
+        if (!key) throw 'Property key is required'
+        if (!type) throw 'Value type is required'
+
+        console.log(Object.keys(rest))
+
+        rest = Object.fromEntries(
+          possiblePropKeys[type].filter(
+            key => rest.hasOwnProperty(key)
+          ).map(
+            key => [key, rest[key]]
+          )
+        )
+
+        nodeProp = { id: getNextId(), prop, key, type, ...rest }
+        nodeProps.push(nodeProp)
+        saveNodeProps()
+        response.end(JSON.stringify(nodeProp))
+        break
+      }
       case 'GET /api/node-types': {
         if (id) {
           const nodeType = nodeTypes.find(nodeType => nodeType.id == id)
@@ -78,7 +125,7 @@ async function handleApiRequest(request, response) {
         nodes = nodes.filter(node => !nodeTypeIds.includes(node.typeId))
         saveNodeTypes()
         saveNodes()
-        response.end(JSON.stringify({nodes: nodesToDelete, types: nodeTypesToDelete}))
+        response.end(JSON.stringify({ nodes: nodesToDelete, types: nodeTypesToDelete }))
         break
       }
       case 'GET /api/nodes': {
@@ -152,6 +199,23 @@ async function handleApiRequest(request, response) {
     response.statusCode = 400
     response.end(json)
   }
+}
+
+function loadNodeProps() {
+  try {
+    const nodePropsJSON = readFileSync('data/node-props.json', 'utf-8')
+    const nodeProps = JSON.parse(nodePropsJSON)
+
+    return nodeProps
+  } catch {
+    return []
+  }
+}
+
+function saveNodeProps() {
+  const nodePropsJSON = JSON.stringify(nodeProps, null, 2)
+
+  return writeFile('data/node-props.json', nodePropsJSON)
 }
 
 function loadNodeTypes() {
