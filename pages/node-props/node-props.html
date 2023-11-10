@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head id="head">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+
+  <!-- <link rel="stylesheet" href="reset.css"> -->
+  <!-- <link rel="stylesheet" href="base.css"> -->
+  <!-- <link rel="stylesheet" href="style.css"> -->
+  <script src="/pages/node-props/node-props.js" defer></script>
+  <!-- <script type="module" src="app.js"></script> -->
+
+  <title>Node Properties</title>
+</head>
+
+<body id="body">
+  <select id="page-select">
+    <script src="/pages/common/page-select.js"></script>
+  </select>
+
+  <hr>
+
+  <h1>Node Properties</h1>
+
+  <form action="javascript:" id="node-props-form">
+    <ul>
+      <button value="delete">Delete</button>
+    </ul>
+    
+    <select name="node-props" size="10" multiple>
+      <template>
+        <option value=""></option>
+      </template>
+    </select>
+  </form>
+
+  <hr>
+
+  <b>
+    Select one or more node properties to delete.
+  </b>
+
+  <details id="node-props-details" hidden>
+    <summary>
+      <b>
+        <button>00a3e</button>
+        <a>constant</a>
+        <span>property deleted</span>
+      </b>
+    </summary>
+
+    <ul>
+      <li>
+        <button title="id">00a3e</button>
+        <a>variable</a>
+        <span>property deleted</span>
+      </li>
+      <template>
+        <li>
+          <button title="id"></button>
+          <a></a>
+          <span>property deleted</span>
+        </li>
+      </template>
+    </ul>
+  </details>
+</body>
+
+</html>
