@@ -1,0 +1,88 @@
+[
+  {
+    "id": "0001f",
+    "prop": "Arrow function",
+    "key": "arrow",
+    "type": "boolean",
+    "default": "false"
+  },
+  {
+    "id": "0001g",
+    "prop": "Used as callback",
+    "key": "callback",
+    "type": "boolean",
+    "default": "false"
+  },
+  {
+    "id": "0001h",
+    "prop": "Higher order function",
+    "key": "higher",
+    "type": "boolean",
+    "default": "false"
+  },
+  {
+    "id": "0001i",
+    "prop": "Recursive function",
+    "key": "recursive",
+    "type": "boolean",
+    "default": "false"
+  },
+  {
+    "id": "0001j",
+    "prop": "Entity type",
+    "key": "entType",
+    "type": "enum",
+    "required": true,
+    "options": [
+      "constant",
+      "let variable",
+      "var variable",
+      "parameter",
+      "declared function",
+      "declared class",
+      "property"
+    ]
+  },
+  {
+    "id": "0001k",
+    "prop": "Data type",
+    "key": "dataType",
+    "type": "enum",
+    "required": true,
+    "options": [
+      "boolean",
+      "number",
+      "string",
+      "null",
+      "undefined",
+      "bigint",
+      "symbol",
+      "object"
+    ]
+  },
+  {
+    "id": "0001l",
+    "prop": "Type of object",
+    "key": "objType",
+    "type": "enum",
+    "required": true,
+    "options": [
+      "array",
+      "function",
+      "date",
+      "error",
+      "event",
+      "eventTarget",
+      "eventEmitter",
+      "promise",
+      "htmlCollection",
+      "nodeList",
+      "htmlElement",
+      "server",
+      "stream",
+      "readable",
+      "writable"
+    ],
+    "custom": true
+  }
+]
