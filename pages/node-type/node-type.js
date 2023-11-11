@@ -1,13 +1,21 @@
 const nodeTypeForm = document.getElementById('node-type-form')
 const nodeTypeSelect = nodeTypeForm.id
 const nodeTypeOptionTemplate = nodeTypeSelect.querySelector('template')
+const nodePropSelect = nodeTypeForm.props
+const nodePropOptionTemplate = nodePropSelect.querySelector('template')
 const details = document.getElementById('node-type-details')
 const singleFeedback = details.previousElementSibling
 const firstFeedback = details.querySelector('b')
 const restOfLines = details.querySelector('ul')
 const feedbackTemplate = details.querySelector('template')
 
-getNodeTypes().then(fillNodeTypeSelect)
+Promise.all([
+  getNodeProps(),
+  getNodeTypes(),
+]).then(([nodeProps, nodeTypes]) => {
+  fillNodePropsSelect(nodeProps)
+  fillNodeTypeSelect(nodeTypes)
+})
   .then(getCurrentNodeTypeId)
   .then(getNodeType)
   .then(actualizeNodeTypeForm)
@@ -30,9 +38,26 @@ function handleSelectNodeType() {
   getNodeType(id).then(actualizeNodeTypeForm)
 }
 
+function getNodeProps() {
+  return fetch('/api/node-props')
+    .then(result => result.json())
+}
+
 function getNodeTypes() {
   return fetch('/api/node-types')
     .then(result => result.json())
+}
+
+function fillNodePropsSelect(nodeProps) {
+  nodeProps.forEach(nodeProp => {
+    const { option } = useNodePropOptionTemplate()
+    const { id, prop, key } = nodeProp
+
+    option.value = id
+    option.textContent = `${prop} (${key})`
+
+    nodePropSelect.append(option)
+  })
 }
 
 function fillNodeTypeSelect(nodeTypes) {
@@ -45,6 +70,13 @@ function fillNodeTypeSelect(nodeTypes) {
 
     nodeTypeSelect.append(option)
   })
+}
+
+function useNodePropOptionTemplate() {
+  const { content } = nodePropOptionTemplate
+  const option = content.firstElementChild.cloneNode(true)
+
+  return { option }
 }
 
 function useNodeTypeOptionTemplate() {
