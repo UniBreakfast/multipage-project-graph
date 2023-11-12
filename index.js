@@ -96,16 +96,17 @@ async function handleApiRequest(request, response) {
       case 'PUT /api/node-types': {
         const body = await getBody(request)
         let nodeType = JSON.parse(body)
-        const { id, type } = nodeType
+        const { id, type, props } = nodeType
 
         if (!id) throw 'Id is required'
         if (!type) throw 'Type is required'
+        if (!props) throw 'Properties are required'
 
         const index = nodeTypes.findIndex(nodeType => nodeType.id == id)
 
         if (index == -1) throw 'Node type not found'
 
-        nodeType = { id, type }
+        nodeType = { id, type, props }
         nodeTypes[index] = nodeType
         saveNodeTypes()
         response.end(JSON.stringify(nodeType))
