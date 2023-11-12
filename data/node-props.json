@@ -73,15 +73,37 @@
       "error",
       "event",
       "eventTarget",
-      "eventEmitter",
       "promise",
       "htmlCollection",
       "nodeList",
       "htmlElement",
+      "eventEmitter",
       "server",
       "stream",
       "readable",
       "writable"
+    ],
+    "custom": true
+  },
+  {
+    "id": "0001m",
+    "prop": "File type",
+    "key": "fileType",
+    "type": "enum",
+    "required": true,
+    "options": [
+      ".html",
+      ".htm",
+      ".css",
+      ".js",
+      ".md",
+      ".png",
+      ".jpg",
+      ".svg",
+      ".ico",
+      ".txt",
+      ".gitignore",
+      ".env"
     ],
     "custom": true
   }
