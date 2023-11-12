@@ -11,6 +11,17 @@ getNodeTypes().then(fillNodeTypesSelect)
 
 nodeTypesForm.onsubmit = handleNodeTypesFormSubmit
 
+nodeTypesSelect.ondblclick = handleNodeTypesSelectDblClick
+
+function handleNodeTypesSelectDblClick(e) {
+  const { target } = e
+  const { value } = target
+
+  if (!value) return
+
+  goTo('node-type', value)
+}
+
 function handleNodeTypesFormSubmit(e) {
   const button = e.submitter
   const action = button.value
@@ -19,6 +30,8 @@ function handleNodeTypesFormSubmit(e) {
 
   if (action === 'delete') {
     deleteNodeTypes(nodeTypeIds)
+  } else if (action === 'details') {
+    goTo('node-type', nodeTypeIds[0])
   }
 }
 
