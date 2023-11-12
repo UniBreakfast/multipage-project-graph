@@ -118,7 +118,9 @@ function actualizeNodeTypeForm(nodeType) {
   nodeTypeForm.type.value = type
 
   for (const option of nodePropSelect.options) {
-    option.toggleAttribute('selected', !!props?.includes(option.value))
+    const selected = !!props?.includes(option.value)
+    option.toggleAttribute('selected', selected)
+    option.selected = selected
   }
 }
 
@@ -165,6 +167,7 @@ async function deleteNodeType() {
 
 async function saveNodeType() {
   const payload = Object.fromEntries(new FormData(nodeTypeForm))
+  payload.props = Array.from(nodePropSelect.selectedOptions).map(option => option.value)
   const init = {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
