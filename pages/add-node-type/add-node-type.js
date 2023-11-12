@@ -1,14 +1,44 @@
 const addNodeTypeForm = document.getElementById('add-node-type-form')
+const nodePropSelect = addNodeTypeForm.props
+const nodePropOptionTemplate = nodePropSelect.querySelector('template')
 const details = document.getElementById('add-node-type-details')
 const singleFeedback = details.previousElementSibling
 const firstFeedback = details.querySelector('b')
 const restOfLines = details.querySelector('ul')
 const feedbackTemplate = details.querySelector('template')
 
+getNodeProps().then(fillNodePropsSelect)
+
 addNodeTypeForm.onsubmit = handleAddNodeTypeSubmit
+
+function getNodeProps() {
+  return fetch('/api/node-props')
+    .then(result => result.json())
+}
+
+function fillNodePropsSelect(nodeProps) {
+  nodeProps.forEach(nodeProp => {
+    const { option } = useNodePropOptionTemplate()
+    const { id, prop, key } = nodeProp
+
+    option.value = id
+    option.textContent = `${prop} (${key})`
+
+    nodePropSelect.append(option)
+  })
+}
+
+function useNodePropOptionTemplate() {
+  const { content } = nodePropOptionTemplate
+  const option = content.firstElementChild.cloneNode(true)
+
+  return { option }
+}
 
 async function handleAddNodeTypeSubmit() {
   const payload = Object.fromEntries(new FormData(addNodeTypeForm))
+  // add multiple selected props to payload
+  payload.props = Array.from(addNodeTypeForm.props.selectedOptions).map(option => option.value)
   const init = {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
