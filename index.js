@@ -53,8 +53,6 @@ async function handleApiRequest(request, response) {
         if (!key) throw 'Property key is required'
         if (!type) throw 'Value type is required'
 
-        console.log(Object.keys(rest))
-
         rest = Object.fromEntries(
           possiblePropKeys[type].filter(
             key => rest.hasOwnProperty(key)
@@ -84,11 +82,12 @@ async function handleApiRequest(request, response) {
       case 'POST /api/node-types': {
         const body = await getBody(request)
         let nodeType = JSON.parse(body)
-        const { type } = nodeType
+        const { type, props } = nodeType
 
         if (!type) throw 'Type is required'
+        if (!props) throw 'Properties are required'
 
-        nodeType = { id: getNextId(), type }
+        nodeType = { id: getNextId(), type, props }
         nodeTypes.push(nodeType)
         saveNodeTypes()
         response.end(JSON.stringify(nodeType))
