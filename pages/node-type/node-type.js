@@ -107,7 +107,7 @@ function getNodeType(id) {
 }
 
 function actualizeNodeTypeForm(nodeType) {
-  const { id, type } = nodeType
+  const { id, type, props } = nodeType
   const nodeTypeOption = nodeTypeSelect.querySelector(`option[value="${id}"]`)
 
   nodeTypeSelect.querySelector('[selected]')?.toggleAttribute('selected')
@@ -116,6 +116,10 @@ function actualizeNodeTypeForm(nodeType) {
   nodeTypeOption.textContent = `${id} \u00A0 ${type}`
   nodeTypeForm.type.setAttribute('value', type)
   nodeTypeForm.type.value = type
+
+  for (const option of nodePropSelect.options) {
+    option.toggleAttribute('selected', !!props?.includes(option.value))
+  }
 }
 
 function handleNodeTypeFormSubmit(e) {
