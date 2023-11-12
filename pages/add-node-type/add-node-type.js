@@ -37,8 +37,7 @@ function useNodePropOptionTemplate() {
 
 async function handleAddNodeTypeSubmit() {
   const payload = Object.fromEntries(new FormData(addNodeTypeForm))
-  // add multiple selected props to payload
-  payload.props = Array.from(addNodeTypeForm.props.selectedOptions).map(option => option.value)
+  payload.props = Array.from(nodePropSelect.selectedOptions).map(option => option.value)
   const init = {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
